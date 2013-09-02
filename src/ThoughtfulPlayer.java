@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * My Thoughtful player. Implements basic strategy for looking ahead.
  * First, he will win if he can.
@@ -20,15 +22,22 @@ public class ThoughtfulPlayer extends Player{
         if (game.centerPiece().mark == Square.Mark.BLANK) {
             return game.centerPiece();
         }
+        ArrayList<Square> possibleChoices = new ArrayList<Square>();
         for (Square square : game.corners()) {
             if (square.mark == Square.Mark.BLANK) {
-                return square;
+                possibleChoices.add(square);
             }
+        }
+        if (possibleChoices.size() >= 1) {
+            return possibleChoices.get((int)(Math.random()*possibleChoices.size()));
         }
         for (Square square : game.sides()) {
             if (square.mark == Square.Mark.BLANK) {
-                return square;
+                possibleChoices.add(square);
             }
+        }
+        if (possibleChoices.size() >= 1) {
+            return possibleChoices.get((int)(Math.random()*possibleChoices.size()));
         }
         return new Square(-1,-1);//This should never happen.
     }
