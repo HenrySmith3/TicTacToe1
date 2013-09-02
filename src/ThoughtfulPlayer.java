@@ -33,6 +33,12 @@ public class ThoughtfulPlayer extends Player{
         return new Square(-1,-1);//This should never happen.
     }
 
+    /**
+     * Tests to see if there is a winning move for the given mark type.
+     * @param game The game state.
+     * @param mark Which player are we looking for a winnning move for?
+     * @return null if no winning move exists, or a Square representing the winning move.
+     */
     public Square winningMove(Game game, Square.Mark mark) {
         for (int i = 0; i <= 2; i++) {
             if (winningMoveInColumn(game, i, mark) != null) {

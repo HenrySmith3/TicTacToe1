@@ -1,11 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Henry
- * Date: 9/2/13
- * Time: 3:20 PM
- * To change this template use File | Settings | File Templates.
+ * Represents the state of the game.
  */
 public class Game {
     //on the board, [0,0] would be the top left.

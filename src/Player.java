@@ -1,9 +1,6 @@
 /**
- * Created with IntelliJ IDEA.
- * User: Henry
- * Date: 9/2/13
- * Time: 3:31 PM
- * To change this template use File | Settings | File Templates.
+ * The abstract class to represent a player.
+ * Subclasses will implement makeMove to show their behavior.
  */
 public abstract class Player {
     public final Square.Mark mySymbol;

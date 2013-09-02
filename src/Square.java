@@ -1,9 +1,6 @@
 /**
- * Created with IntelliJ IDEA.
- * User: Henry
- * Date: 9/2/13
- * Time: 3:20 PM
- * To change this template use File | Settings | File Templates.
+ * Represents a single square. Strictly speaking this class isn't necessary, but it avoids a lot of
+ * things like string checking and ugly passing of parameters.
  */
 public class Square {
     public enum Mark {X, O,BLANK};

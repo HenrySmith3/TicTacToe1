@@ -4,13 +4,16 @@ public class Main {
 	    Game game = new Game();
         for (String arg : args) {System.out.println(arg);}
         if (args.length != 2 || args[0].length() != 1 || args[1].length() != 1) {
-            args = new String[]{"H", "T"};
+            args = new String[]{"N", "T"};
         }
         System.out.print(game);
         Player player1 = makePlayer(args[0], Square.Mark.X);
         Player player2 = makePlayer(args[1], Square.Mark.O);
         Player currentPlayer = player1;
+        int turn = 1;
         while (!game.isFinished()) {
+            System.out.println("Turn " + turn + ":");
+            turn++;
             Square move = currentPlayer.makeMove(game);
             if (!game.isValidMove(move)) {
                 throw new Exception("Not a valid move: " + move);
