@@ -1,13 +1,32 @@
 public class Main {
 
+    /**
+     * Uncomment the code in this method to enable playing many games to get statistics on how well an agent does.
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception{
-        for (String arg : args) {System.out.println(arg);}
+        //for (String arg : args) {System.out.println(arg);}
         if (args.length != 2 || args[0].length() != 1 || args[1].length() != 1) {
             args = new String[]{"N", "T"};
         }
         Player player1 = makePlayer(args[0], Square.Mark.X);
         Player player2 = makePlayer(args[1], Square.Mark.O);
         playGame(player1, player2);
+//        int xWins = 0;
+//        int oWins = 0;
+//        int tries = 1000000;
+//        for (int i = 0; i < tries; i++) {
+//            Square.Mark winner = playGame(player1, player2);
+//            if (winner == Square.Mark.O) {
+//                oWins++;
+//            } else if (winner == Square.Mark.X) {
+//                xWins++;
+//            }
+//        }
+//        System.out.println("X won: " + xWins);
+//        System.out.println("O won: " + oWins);
+//        System.out.println("Stalemates: " + (tries - xWins - oWins));
     }
 
     /**
