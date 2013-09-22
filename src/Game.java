@@ -7,14 +7,23 @@ public class Game {
     //on the board, [0,0] would be the top left.
     private Square[][] board;
     private Square.Mark turn;
+    public GameKnowledge gameKnowledge;
     public Game() {
         turn = Square.Mark.X;//X plays first
         board = new Square[3][3];
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 2; y++) {
                 board[x][y] = new Square(x,y);
+                if ((x == 0 || x == 2) && (y == 0 || y == 2)) {
+                    board[x][y].type = Square.Type.CORNER;
+                } else if (x == 1 && y == 1) {
+                    board[x][y].type = Square.Type.CENTER;
+                } else {
+                    board[x][y].type = Square.Type.SIDE;
+                }
             }
         }
+        gameKnowledge = new GameKnowledge(board, 3);
     }
 
     public void makeMove(Square square, Square.Mark mark) {

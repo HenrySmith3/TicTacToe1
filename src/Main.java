@@ -56,6 +56,10 @@ public class Main {
         } else {
             System.out.println("Winner: " + game.getWinner());
         }
+        System.out.println("\n" + player1.mySymbol + "'s reasoning:\n");
+        System.out.println(player1.reasoning.printReasons());
+        System.out.println("\n" + player2.mySymbol + "'s reasoning:\n");
+        System.out.println(player2.reasoning.printReasons());
         return game.getWinner();
     }
 

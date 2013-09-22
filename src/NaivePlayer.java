@@ -14,26 +14,35 @@ public class NaivePlayer extends Player {
     }
     @Override
     public Square makeMove(Game game) {
-        if (game.centerPiece().mark == Square.Mark.BLANK) {
-            return game.centerPiece();
-        }
-        ArrayList<Square> possibleChoices = new ArrayList<Square>();
-        for (Square square : game.corners()) {
-            if (square.mark == Square.Mark.BLANK) {
-                possibleChoices.add(square);
-            }
-        }
-        if (possibleChoices.size() >= 1) {
-            return possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-        }
-        for (Square square : game.sides()) {
-            if (square.mark == Square.Mark.BLANK) {
-                possibleChoices.add(square);
-            }
-        }
-        if (possibleChoices.size() >= 1) {
-            return possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-        }
-        return new Square(-1,-1);//This should never happen.
+        Square square = game.gameKnowledge.mostValuableEmptySquare();
+        reasoning.addReason(new Reason(square, "I'm too naive to know what the best strategy is, so I'm just picking the most valuable square, which is this "
+            + square.type.toString() + " square"));
+        return square;
+//        if (game.centerPiece().mark == Square.Mark.BLANK) {
+//            reasoning.addReason(new Reason(game.centerPiece(), "the center piece is the most valuable and it isn't taken yet."));
+//            return game.centerPiece();
+//        }
+//        ArrayList<Square> possibleChoices = new ArrayList<Square>();
+//        for (Square square : game.corners()) {
+//            if (square.mark == Square.Mark.BLANK) {
+//                possibleChoices.add(square);
+//            }
+//        }
+//        if (possibleChoices.size() >= 1) {
+//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
+//            reasoning.addReason(new Reason(chosenSquare, "the center piece is taken, but there's a corner open and the corners are valuable."));
+//            return chosenSquare;
+//        }
+//        for (Square square : game.sides()) {
+//            if (square.mark == Square.Mark.BLANK) {
+//                possibleChoices.add(square);
+//            }
+//        }
+//        if (possibleChoices.size() >= 1) {
+//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
+//            reasoning.addReason(new Reason(chosenSquare, "the corners and center square are all taken, so I have to take a side piece instead"));
+//            return chosenSquare;
+//        }
+        //return new Square(-1,-1);//This should never happen.
     }
 }

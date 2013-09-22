@@ -12,55 +12,100 @@ public class ThoughtfulPlayer extends Player{
     }
     @Override
     public Square makeMove(Game game) {
-        if (winningMove(game, mySymbol) != null) {
-            return winningMove(game, mySymbol);
+        Square winningMove = null;
+        winningMove = winningMove(game, mySymbol);
+        if (winningMove != null) {
+            return winningMove;
         }
         Square.Mark opponentSymbol = mySymbol == Square.Mark.X ? Square.Mark.O : Square.Mark.X;
-        if (winningMove(game, opponentSymbol) != null) {
-            return winningMove(game, opponentSymbol);
+        winningMove = winningMove(game, opponentSymbol);
+        if (winningMove != null) {
+            return winningMove;
         }
-        if (game.centerPiece().mark == Square.Mark.BLANK) {
-            return game.centerPiece();
-        }
-        ArrayList<Square> possibleChoices = new ArrayList<Square>();
-        for (Square square : game.corners()) {
-            if (square.mark == Square.Mark.BLANK) {
-                possibleChoices.add(square);
-            }
-        }
-        if (possibleChoices.size() >= 1) {
-            return possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-        }
-        for (Square square : game.sides()) {
-            if (square.mark == Square.Mark.BLANK) {
-                possibleChoices.add(square);
-            }
-        }
-        if (possibleChoices.size() >= 1) {
-            return possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-        }
-        return new Square(-1,-1);//This should never happen.
+
+        Square square = game.gameKnowledge.mostValuableEmptySquare();
+        reasoning.addReason(new Reason(square, "I can't win this turn, and my opponent can't win next turn, so I'm just picking the most valuable square, which is this "
+                + square.type.toString() + " square"));
+        return square;
+
+//        if (game.centerPiece().mark == Square.Mark.BLANK) {
+//            reasoning.addReason(new Reason(game.centerPiece(), "the center piece is the most valuable and it isn't taken yet."));
+//            return game.centerPiece();
+//        }
+//        ArrayList<Square> possibleChoices = new ArrayList<Square>();
+//        for (Square square : game.corners()) {
+//            if (square.mark == Square.Mark.BLANK) {
+//                possibleChoices.add(square);
+//            }
+//        }
+//        if (possibleChoices.size() >= 1) {
+//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
+//            reasoning.addReason(new Reason(chosenSquare, "the center piece is taken, but there's a corner open and the corners are valuable."));
+//            return chosenSquare;
+//        }
+//        for (Square square : game.sides()) {
+//            if (square.mark == Square.Mark.BLANK) {
+//                possibleChoices.add(square);
+//            }
+//        }
+//        if (possibleChoices.size() >= 1) {
+//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
+//            reasoning.addReason(new Reason(chosenSquare, "the corners and center square are all taken, so I have to take a side piece instead"));
+//            return chosenSquare;
+//        }
+//        return new Square(-1,-1);//This should never happen.
     }
 
     /**
      * Tests to see if there is a winning move for the given mark type.
+     * Also adds the reasoning in.
      * @param game The game state.
      * @param mark Which player are we looking for a winnning move for?
      * @return null if no winning move exists, or a Square representing the winning move.
      */
     public Square winningMove(Game game, Square.Mark mark) {
-        for (int i = 0; i <= 2; i++) {
+        for (int i = 0; i <= game.gameKnowledge.boardWidth -1; i++) {
             if (winningMoveInColumn(game, i, mark) != null) {
+                if (mark.equals(mySymbol)) {
+                    reasoning.addReason(new Reason(winningMoveInColumn(game, i, mark), "there are already two of my pieces in the "
+                        + numberToOrdinal(i) + " column so I can win by playing there."));
+                } else {
+                    reasoning.addReason(new Reason(winningMoveInColumn(game, i, mark), "there are already two of my opponent's pieces in the "
+                            + numberToOrdinal(i) + " column so I have to play there to block him."));
+                }
                 return winningMoveInColumn(game, i, mark);
             }
+        }
+        for (int i = 0; i <= game.gameKnowledge.boardHeight -1; i++) {
             if (winningMoveInRow(game, i, mark) != null) {
+                if (mark.equals(mySymbol)) {
+                    reasoning.addReason(new Reason(winningMoveInRow(game, i, mark), "there are already two of my pieces in the "
+                            + numberToOrdinal(i) + " row so I can win by playing there."));
+                } else {
+                    reasoning.addReason(new Reason(winningMoveInRow(game, i, mark), "there are already two of my opponent's pieces in the "
+                            + numberToOrdinal(i) + " row so I have to play there to block him."));
+                }
                 return winningMoveInRow(game, i, mark);
             }
         }
         if (winningMoveInDiagonal(game, true, mark) != null) {
+            if (mark.equals(mySymbol)) {
+                reasoning.addReason(new Reason(winningMoveInDiagonal(game, true, mark), "there are already two of my pieces in the " +
+                        "diagonal so I can win by playing there."));
+            } else {
+                reasoning.addReason(new Reason(winningMoveInDiagonal(game, true, mark), "there are already two of my opponent's pieces in the "
+                        + "diagonal so I have to play there to block him."));
+            }
             return winningMoveInDiagonal(game, true, mark);
         }
         if (winningMoveInDiagonal(game, false, mark) != null) {
+            if (mark.equals(mySymbol)) {
+                reasoning.addReason(new Reason(winningMoveInDiagonal(game, false, mark), "there are already two of my pieces in the " +
+                        "diagonal so I can win by playing there."));
+            } else {
+                reasoning.addReason(new Reason(winningMoveInDiagonal(game, false, mark), "there are already two of my opponent's pieces in the "
+                        + "diagonal so I have to play there to block him."));
+            }
             return winningMoveInDiagonal(game, false, mark);
         }
         return null;
@@ -83,7 +128,7 @@ public class ThoughtfulPlayer extends Player{
                 return null;//enemy has one of these pieces, so it can't be a victory.
             }
         }
-        if (myPlaces == 2 && openSquare != null) {
+        if (myPlaces == game.gameKnowledge.piecesInARowOrColumnToWin - 1 && openSquare != null) {
             return openSquare;
         } else {
             return null; //This should absolutely never happen.
@@ -106,7 +151,7 @@ public class ThoughtfulPlayer extends Player{
                 return null;//enemy has one of these pieces, so it can't be a victory.
             }
         }
-        if (myPlaces == 2 && openSquare != null) {
+        if (myPlaces == game.gameKnowledge.piecesInARowOrColumnToWin - 1 && openSquare != null) {
             return openSquare;
         } else {
             return null; //This should absolutely never happen.
@@ -135,10 +180,27 @@ public class ThoughtfulPlayer extends Player{
                 return null;//enemy has one of these pieces, so it can't be a victory.
             }
         }
-        if (myPlaces == 2 && openSquare != null) {
+        if (myPlaces == game.gameKnowledge.piecesInARowOrColumnToWin - 1 && openSquare != null) {
             return openSquare;
         } else {
             return null; //This should absolutely never happen.
+        }
+    }
+
+    public static String numberToOrdinal(int i) {
+        switch (i) {
+            case 1:
+                return "first";
+            case 2:
+                return "second";
+            case 3:
+                return "third";
+            case 4:
+                return "fourth";
+            case 5:
+                return "fifth";
+            default:
+                return "";
         }
     }
 }

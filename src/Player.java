@@ -3,6 +3,7 @@
  * Subclasses will implement makeMove to show their behavior.
  */
 public abstract class Player {
+    public PlayerReasoning reasoning = new PlayerReasoning();
     public final Square.Mark mySymbol;
     public Player(){this.mySymbol = Square.Mark.BLANK;}//unused
     public Player(Square.Mark mySymbol) {
