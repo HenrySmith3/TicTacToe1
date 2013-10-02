@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * My naive player simply wants to take the center piece first. Then, it tries to take the corners,
@@ -14,35 +15,29 @@ public class NaivePlayer extends Player {
     }
     @Override
     public Square makeMove(Game game) {
-        Square square = game.gameKnowledge.mostValuableEmptySquare();
-        reasoning.addReason(new Reason(square, "I'm too naive to know what the best strategy is, so I'm just picking the most valuable square, which is this "
-            + square.type.toString() + " square"));
-        return square;
-//        if (game.centerPiece().mark == Square.Mark.BLANK) {
-//            reasoning.addReason(new Reason(game.centerPiece(), "the center piece is the most valuable and it isn't taken yet."));
-//            return game.centerPiece();
-//        }
-//        ArrayList<Square> possibleChoices = new ArrayList<Square>();
-//        for (Square square : game.corners()) {
-//            if (square.mark == Square.Mark.BLANK) {
-//                possibleChoices.add(square);
-//            }
-//        }
-//        if (possibleChoices.size() >= 1) {
-//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-//            reasoning.addReason(new Reason(chosenSquare, "the center piece is taken, but there's a corner open and the corners are valuable."));
-//            return chosenSquare;
-//        }
-//        for (Square square : game.sides()) {
-//            if (square.mark == Square.Mark.BLANK) {
-//                possibleChoices.add(square);
-//            }
-//        }
-//        if (possibleChoices.size() >= 1) {
-//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-//            reasoning.addReason(new Reason(chosenSquare, "the corners and center square are all taken, so I have to take a side piece instead"));
-//            return chosenSquare;
-//        }
-        //return new Square(-1,-1);//This should never happen.
+        List<StrategicKnowledge.MoveType> strategies = StrategicKnowledge.getStrategy(StrategicKnowledge.StrategyType.NAIVE);
+
+        for (StrategicKnowledge.MoveType moveType : strategies) {
+            reasoning.addReason(new Reason(null, "My limited strategic knowledge says that I should go for a " + moveType + " right now."));
+            Square chosenMove = resolveMove(moveType, game);
+            if (chosenMove != null) {
+                return chosenMove;
+            } else {
+                reasoning.addReason(new Reason(null, "I couldn't find a valid " + moveType + "."));
+            }
+        }
+        return null;
+    }
+
+    private Square resolveMove(StrategicKnowledge.MoveType moveType, Game game) {
+        switch (moveType) {
+            case VALUABLE_MOVE:
+                Square square = game.gameKnowledge.mostValuableEmptySquare();
+                reasoning.addReason(new Reason(square, "I'm too naive to know what the best strategy is, so I'm just picking the most valuable square, which is this "
+                        + square.type.toString() + " square"));
+                return square;
+            default:
+                return null;
+        }
     }
 }

@@ -15,8 +15,12 @@ public class PlayerReasoning {
         String retVal = "";
         int turn = 1;
         for (Reason reason : reasons) {
-            retVal += "On my " + ThoughtfulPlayer.numberToOrdinal(turn) + " turn, " + reason.toString();
-            turn++;
+            if (null == reason.move) {//The move is null for strategic knowledge.
+                retVal += reason.justification + "\n";
+            } else {
+                retVal += "On my " + ThoughtfulPlayer.numberToOrdinal(turn) + " turn, " + reason.toString() + "\n";
+                turn++;
+            }
         }
         return retVal;
     }

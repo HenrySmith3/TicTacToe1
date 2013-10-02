@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * My Thoughtful player. Implements basic strategy for looking ahead.
@@ -12,48 +13,32 @@ public class ThoughtfulPlayer extends Player{
     }
     @Override
     public Square makeMove(Game game) {
-        Square winningMove = null;
-        winningMove = winningMove(game, mySymbol);
-        if (winningMove != null) {
-            return winningMove;
-        }
-        Square.Mark opponentSymbol = mySymbol == Square.Mark.X ? Square.Mark.O : Square.Mark.X;
-        winningMove = winningMove(game, opponentSymbol);
-        if (winningMove != null) {
-            return winningMove;
-        }
+        List<StrategicKnowledge.MoveType> strategies = StrategicKnowledge.getStrategy(StrategicKnowledge.StrategyType.THOUGHTFUL);
 
-        Square square = game.gameKnowledge.mostValuableEmptySquare();
-        reasoning.addReason(new Reason(square, "I can't win this turn, and my opponent can't win next turn, so I'm just picking the most valuable square, which is this "
-                + square.type.toString() + " square"));
-        return square;
+        for (StrategicKnowledge.MoveType moveType : strategies) {
+            reasoning.addReason(new Reason(null, "My strategic knowledge says that I should go for a " + moveType + " right now."));
+            Square chosenMove = resolveMove(moveType, game);
+            if (chosenMove != null) {
+                return chosenMove;
+            } else {
+                reasoning.addReason(new Reason(null, "I couldn't find a valid " + moveType + "."));
+            }
+        }
+        return null;
+    }
 
-//        if (game.centerPiece().mark == Square.Mark.BLANK) {
-//            reasoning.addReason(new Reason(game.centerPiece(), "the center piece is the most valuable and it isn't taken yet."));
-//            return game.centerPiece();
-//        }
-//        ArrayList<Square> possibleChoices = new ArrayList<Square>();
-//        for (Square square : game.corners()) {
-//            if (square.mark == Square.Mark.BLANK) {
-//                possibleChoices.add(square);
-//            }
-//        }
-//        if (possibleChoices.size() >= 1) {
-//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-//            reasoning.addReason(new Reason(chosenSquare, "the center piece is taken, but there's a corner open and the corners are valuable."));
-//            return chosenSquare;
-//        }
-//        for (Square square : game.sides()) {
-//            if (square.mark == Square.Mark.BLANK) {
-//                possibleChoices.add(square);
-//            }
-//        }
-//        if (possibleChoices.size() >= 1) {
-//            Square chosenSquare = possibleChoices.get((int)(Math.random()*possibleChoices.size()));
-//            reasoning.addReason(new Reason(chosenSquare, "the corners and center square are all taken, so I have to take a side piece instead"));
-//            return chosenSquare;
-//        }
-//        return new Square(-1,-1);//This should never happen.
+    private Square resolveMove(StrategicKnowledge.MoveType moveType, Game game) {
+        switch (moveType) {
+            case WINNING_MOVE:
+                return winningMove(game, mySymbol);
+            case BLOCKING_MOVE:
+                return winningMove(game, mySymbol == Square.Mark.X ? Square.Mark.O : Square.Mark.X);//opponent's symbol
+            default:
+                Square square = game.gameKnowledge.mostValuableEmptySquare();
+                reasoning.addReason(new Reason(square, "I can't win this turn, and my opponent can't win next turn, so I'm just picking the most valuable square, which is this "
+                        + square.type.toString() + " square."));
+                return square;
+        }
     }
 
     /**
