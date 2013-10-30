@@ -176,7 +176,50 @@ public class ThoughtfulPlayer extends Player{
 
     @Override
     public String answerQuestion(Main.Question question, int turn, Game game) {
-        return "Not yet implemented";
+        List<Reason> reasons = reasoning.getReasonsForTurn(turn);
+        if (question.equals(Main.Question.WHICHACTION)) {
+            Square move = reasons.get(reasons.size()-1).move;
+            if (move.type.equals(Square.Type.CENTER)) {
+                return "I moved to the center piece on the " + ThoughtfulPlayer.numberToOrdinal(turn) + " turn";
+            } else if (move.type.equals(Square.Type.CORNER)) {
+                return "I moved to a corner piece at (" + move.x + "," + move.y + ") on the " +
+                        ThoughtfulPlayer.numberToOrdinal(turn) + " turn";
+            } else {
+                return "I moved to an edge piece at (" + move.x + "," + move.y + ") on the " +
+                        ThoughtfulPlayer.numberToOrdinal(turn) + " turn";
+            }
+        } else if (question.equals(Main.Question.WHY)) {
+            String retVal = "";
+            retVal += reasons.get(reasons.size()-2).justification;
+            retVal = retVal.replace("says", "said");
+            retVal = retVal.replace(" right now.", ". \n");
+            if (reasons.size() == 6) {
+                retVal += reasons.get(1).justification.replace(".", ", and ");
+                retVal += reasons.get(3).justification.replace(".", ", but ");
+                retVal += reasons.get(5).justification;
+            } else if (reasons.size() == 4) {
+                retVal += reasons.get(1).justification.replace(".", ", but ");
+                retVal += reasons.get(3).justification;
+            } else {
+                retVal += reasons.get(reasons.size()-1).justification;
+            }
+            return retVal;
+        } else if (question.equals(Main.Question.GOODMOVE)) {
+            Square move = reasons.get(reasons.size()-1).move;
+            if (game.getWinner() == mySymbol) {
+                if (game.inWinningCombo(move)) {
+                    return "Well, I won the game and that move was in the winning set of three, so yes, I think it was a good move.";
+                } else {
+                    return "That move wasn't actually in the winning combination, but I still won the game, so I still feel good about it.";
+                }
+            } else {
+                if (turn ==1) {
+                    return "Well, I lost the game, but this was my first move, so I can't really attribute my loss to it.";
+                }
+                return "I lost the game, so I can't really feel too good about any of my moves except for maybe the first move.";
+            }
+        }
+        throw new RuntimeException();
     }
 
     public static String numberToOrdinal(int i) {
