@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class Main {
 
-    public enum Question{WHY, WHICHACTION};
+    public enum Question{WHY, WHICHACTION, GOODMOVE};
 
     /**
      * Uncomment the code in this method to enable playing many games to get statistics on how well an agent does.
@@ -92,7 +92,7 @@ public class Main {
             }
             int turn = selectWhichTurn(game, selectedPlayer);
             Question question = selectWhichQuestion(turn);
-            if (!displayAnswer(selectedPlayer.answerQuestion(question, turn))) {
+            if (!displayAnswer(selectedPlayer.answerQuestion(question, turn, game))) {
                 break;
             }
         }
@@ -156,19 +156,24 @@ public class Main {
                 ThoughtfulPlayer.numberToOrdinal(turn) + " turn?");
         JRadioButton whyButton = new JRadioButton("Why did you make that move on your " +
                 ThoughtfulPlayer.numberToOrdinal(turn) + " turn?");
+        JRadioButton goodButton = new JRadioButton("Do you feel like the move you made on your " +
+                ThoughtfulPlayer.numberToOrdinal(turn) + " turn was a good decision?");
         ButtonGroup group = new ButtonGroup();
         whichButton.setSelected(true);
         group.add(whichButton);
         group.add(whyButton);
+        group.add(goodButton);
         final JComponent[] inputs = new JComponent[] {
                 new JLabel("What question would you like to ask?"),
-                whichButton, whyButton
+                whichButton, whyButton, goodButton
         };
         JOptionPane.showMessageDialog(null, inputs, "Select Question", JOptionPane.PLAIN_MESSAGE);
         if (whichButton.isSelected()) {
             return Question.WHICHACTION;
-        } else {
+        } else if (whyButton.isSelected()) {
             return Question.WHY;
+        } else {
+            return Question.GOODMOVE;
         }
     }
 

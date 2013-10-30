@@ -158,6 +158,37 @@ public class Game {
         return Square.Mark.BLANK;
     }
 
+    /**
+     * Tests if a given square is in the winning play.
+     */
+    public boolean inWinningCombo(Square square) {
+        if (!isFinished()) {
+            return false;
+        }
+        int x = square.x;
+        int y = square.y;
+        ArrayList<Square> squares = squaresWithMark(square.mark);
+        //no matter the type, it could be a horizontal or vertical win.
+        if (board[x][0].mark == square.mark && board[x][1].mark == square.mark && board[x][2].mark == square.mark) {
+            return true;
+        }
+        if (board[0][y].mark == square.mark && board[1][y].mark == square.mark && board[2][y].mark == square.mark) {
+            return true;
+        }
+        //for center or corner, have to check diagonals.
+        if (square.type == Square.Type.CENTER || (square.x == 0 && square.y == 0) || (square.x == 2 && square.y == 2)) {
+            if (checkDiagonal(true) == square.mark) {
+                return true;
+            }
+        }
+        if (square.type == Square.Type.CENTER || (square.x == 2 && square.y == 0) || (square.x == 0 && square.y == 2)) {
+            if (checkDiagonal(false) == square.mark) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Square centerPiece() {
         return board[1][1];
     }

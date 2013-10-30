@@ -15,5 +15,5 @@ public abstract class Player {
     }
     public abstract Square makeMove(Game game);
 
-    public abstract String answerQuestion(Main.Question question, int turn);
+    public abstract String answerQuestion(Main.Question question, int turn, Game game);
 }

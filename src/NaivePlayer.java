@@ -43,7 +43,7 @@ public class NaivePlayer extends Player {
 
 
     @Override
-    public String answerQuestion(Main.Question question, int turn) {
+    public String answerQuestion(Main.Question question, int turn, Game game) {
         List<Reason> reasons = reasoning.getReasonsForTurn(turn);
         if (question.equals(Main.Question.WHICHACTION)) {
             Square move = reasons.get(reasons.size()-1).move;
@@ -60,9 +60,23 @@ public class NaivePlayer extends Player {
             String retVal = "";
             retVal += reasons.get(reasons.size()-2).justification;
             retVal = retVal.replace("says", "said");
-            retVal = retVal.replace(" right now.", ".\n");
+            retVal = retVal.replace(" right now.", ". \n");
             retVal += reasons.get(reasons.size()-1).justification;
             return retVal;
+        } else if (question.equals(Main.Question.GOODMOVE)) {
+            Square move = reasons.get(reasons.size()-1).move;
+            if (game.getWinner() == mySymbol) {
+                if (game.inWinningCombo(move)) {
+                    return "Well, I won the game and that move was in the winning set of three, so yes, I think it was a good move.";
+                } else {
+                    return "That move wasn't actually in the winning combination, but I still won the game, so I still feel good about it.";
+                }
+            } else {
+                if (turn ==1) {
+                    return "Well, I lost the game, but this was my first move, so I can't really attribute my loss to it.";
+                }
+                return "I lost the game, so I can't really feel too good about any of my moves except for maybe the first move.";
+            }
         }
         throw new RuntimeException();
     }

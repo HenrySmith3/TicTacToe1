@@ -24,7 +24,7 @@ public class HumanPlayer extends Player{
     }
 
     @Override
-    public String answerQuestion(Main.Question question, int turn) {
+    public String answerQuestion(Main.Question question, int turn, Game game) {
         return "Ask the human who made the turn.";
     }
 }
