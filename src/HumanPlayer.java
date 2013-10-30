@@ -22,4 +22,9 @@ public class HumanPlayer extends Player{
         return new Square(Integer.parseInt(xField.getText()),
                 Integer.parseInt(yField.getText()));
     }
+
+    @Override
+    public String answerQuestion(Main.Question question, int turn) {
+        return "Ask the human who made the turn.";
+    }
 }

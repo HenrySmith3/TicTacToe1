@@ -14,4 +14,6 @@ public abstract class Player {
         return mySymbol;
     }
     public abstract Square makeMove(Game game);
+
+    public abstract String answerQuestion(Main.Question question, int turn);
 }

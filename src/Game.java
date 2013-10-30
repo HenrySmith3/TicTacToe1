@@ -6,10 +6,9 @@ import java.util.ArrayList;
 public class Game {
     //on the board, [0,0] would be the top left.
     private Square[][] board;
-    private Square.Mark turn;
+    public int turn;
     public GameKnowledge gameKnowledge;
     public Game() {
-        turn = Square.Mark.X;//X plays first
         board = new Square[3][3];
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 2; y++) {

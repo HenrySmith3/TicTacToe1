@@ -40,4 +40,30 @@ public class NaivePlayer extends Player {
                 return null;
         }
     }
+
+
+    @Override
+    public String answerQuestion(Main.Question question, int turn) {
+        List<Reason> reasons = reasoning.getReasonsForTurn(turn);
+        if (question.equals(Main.Question.WHICHACTION)) {
+            Square move = reasons.get(reasons.size()-1).move;
+            if (move.type.equals(Square.Type.CENTER)) {
+                return "I moved to the center piece on the " + ThoughtfulPlayer.numberToOrdinal(turn) + " turn";
+            } else if (move.type.equals(Square.Type.CORNER)) {
+                return "I moved to a corner piece at (" + move.x + "," + move.y + ") on the " +
+                        ThoughtfulPlayer.numberToOrdinal(turn) + " turn";
+            } else {
+                return "I moved to an edge piece at (" + move.x + "," + move.y + ") on the " +
+                        ThoughtfulPlayer.numberToOrdinal(turn) + " turn";
+            }
+        } else if (question.equals(Main.Question.WHY)) {
+            String retVal = "";
+            retVal += reasons.get(reasons.size()-2).justification;
+            retVal = retVal.replace("says", "said");
+            retVal = retVal.replace(" right now.", ".\n");
+            retVal += reasons.get(reasons.size()-1).justification;
+            return retVal;
+        }
+        throw new RuntimeException();
+    }
 }

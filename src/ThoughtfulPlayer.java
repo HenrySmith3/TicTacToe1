@@ -27,6 +27,7 @@ public class ThoughtfulPlayer extends Player{
         return null;
     }
 
+
     private Square resolveMove(StrategicKnowledge.MoveType moveType, Game game) {
         switch (moveType) {
             case WINNING_MOVE:
@@ -172,6 +173,12 @@ public class ThoughtfulPlayer extends Player{
         }
     }
 
+
+    @Override
+    public String answerQuestion(Main.Question question, int turn) {
+        return "Not yet implemented";
+    }
+
     public static String numberToOrdinal(int i) {
         switch (i) {
             case 1:
@@ -184,6 +191,14 @@ public class ThoughtfulPlayer extends Player{
                 return "fourth";
             case 5:
                 return "fifth";
+            case 6:
+                return "sixth";
+            case 7:
+                return "seventh";
+            case 8:
+                return "eighth";
+            case 9:
+                return "ninth";
             default:
                 return "";
         }
